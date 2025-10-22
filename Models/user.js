@@ -4,14 +4,6 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  moods: [
-    {
-      mood: Number,
-      activity: String,
-      note: String,
-      date: { type: Date, default: Date.now }
-    }
-  ],
   lastLogin: { type: Date }
 });
 
