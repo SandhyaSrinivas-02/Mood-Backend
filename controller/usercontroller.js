@@ -5,12 +5,12 @@ const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, gender, email, password } = req.body;
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
-    user = new User({ firstName, lastName, email, password });
+    user = new User({ firstName, lastName, gender, email, password });
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
     await user.save();
@@ -19,6 +19,7 @@ exports.registerUser = async (req, res) => {
       token,
       firstName: user.firstName,
       lastName: user.lastName,
+      gender: user.gender,
       email: user.email
     });
   } catch (error) {
@@ -48,6 +49,7 @@ exports.loginUser = async (req, res) => {
       token,
       firstName: user.firstName,
       lastName: user.lastName,
+      gender: user.gender,
       email: user.email,
       _id: user._id
     });
@@ -57,7 +59,7 @@ exports.loginUser = async (req, res) => {
 };
 exports.updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, email } = req.body;
+    const { firstName, lastName, gender, email } = req.body;
     const userId = req.user._id;
 
     const existingUser = await User.findOne({ 
@@ -74,6 +76,7 @@ exports.updateProfile = async (req, res) => {
       { 
         firstName,
         lastName,
+        gender,
         email 
       },
       { new: true }
